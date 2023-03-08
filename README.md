@@ -2,7 +2,7 @@
 
 Railway では Git で自分が取り組んだ内容を記録するときに、自動でテストが実行されます。この際、Station の内容に即した実装になっているかを最低限のラインとして確認します。
 テストが通れば Station クリアとなります。
-クリア後、TechTrain の画面に戻り、クリアになっているかを確認してみてください。
+クリア後、TechTrain の画面に戻り、クリアになっているかを確認してみてください。。
 
 [ユーザーマニュアル](https://docs.google.com/presentation/d/1BJSPCWBfy5xtwvBanoRGB77Y0N6JWMAHemEOLP49IPE/edit?usp=sharing)
 
@@ -22,8 +22,8 @@ SQLite| 3.35.* or higher
 |Node.js| 14.*  [ 12.* ,  16.* では動作しません]|
 |Yarn|1.22.*|
 
-バージョンが異なる場合、動作しない場合があります。  
-Node.js, Yarnのインストールがまだの場合は[html-staions](https://github.com/TechBowl-japan/html-stations)を参考にインストールしてください。  
+バージョンが異なる場合、動作しない場合があります。
+Node.js, Yarnのインストールがまだの場合は[html-staions](https://github.com/TechBowl-japan/html-stations)を参考にインストールしてください。
 また、使用PCがWindowsの場合は、WSLを[この記事](https://docs.microsoft.com/ja-jp/windows/wsl/install-win10)を参考にインストールしてください。
 
 ### 「必要なツール」インストール済みの場合
