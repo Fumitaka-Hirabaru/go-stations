@@ -4,7 +4,6 @@ import (
 	"context"
 	"database/sql"
 	"log"
-	"time"
 
 	"github.com/TechBowl-japan/go-stations/model"
 )
@@ -32,7 +31,7 @@ func (s *TODOService) CreateTODO(ctx context.Context, subject, description strin
 	if err != nil {
 		log.Print(err)
 	}
-	
+
 	rows, err := res.LastInsertId()
 	if err != nil {
 		log.Print(err)
