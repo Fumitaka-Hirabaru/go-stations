@@ -1,8 +1,8 @@
 package handler
 
 import (
-	"log"
 	"encoding/json"
+	"log"
 	"net/http"
 
 	"github.com/TechBowl-japan/go-stations/model"
@@ -15,7 +15,7 @@ type HealthzHandler struct{
 
 // NewHealthzHandler returns HealthzHandler based http.Handler.
 func NewHealthzHandler() *HealthzHandler {
-	return &HealthzHandler{Endpoint: "/healthz"}
+	return &HealthzHandler{}
 }
 
 // ServeHTTP implements http.Handler interface.
