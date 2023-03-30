@@ -1,11 +1,10 @@
 package main
 
 import (
-	"github.com/TechBowl-japan/go-stations/handler"
 	"log"
+	"net/http"
 	"os"
 	"time"
-	"net/http"
 
 	"github.com/TechBowl-japan/go-stations/db"
 	"github.com/TechBowl-japan/go-stations/handler/router"
@@ -51,11 +50,9 @@ func realMain() error {
 
 	// NOTE: 新しいエンドポイントの登録はrouter.NewRouterの内部で行うようにする
 	mux := router.NewRouter(todoDB)
-	h := handler.NewHealthzHandler()
-	mux.Handle(h.Endpoint, h)
-	http.ListenAndServe(defaultPort, mux)
 
-	// TODO: サーバーをlistenする
+	// * HTTPSサーバーを立ち上げる
+	http.ListenAndServe(port, mux)
 
 	return nil
 }
