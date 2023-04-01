@@ -23,31 +23,52 @@ func NewTODOHandler(svc *service.TODOService) *TODOHandler {
 }
 
 func (h *TODOHandler) ServeHTTP(w http.ResponseWriter, r *http.Request){
-	if r.Method != http.MethodPost {
-		return
-	}
-
-	todoRequest := &model.CreateTODORequest{}
-	if err := json.NewDecoder(r.Body).Decode(todoRequest); err != nil {
-		log.Println(err)
-		return
-	}
-
-	if todoRequest.Subject == "" {
-		w.WriteHeader(http.StatusBadRequest)
-		return
-	}
-
-	ctx := r.Context()
-	todoResponse, err := h.Create(ctx, todoRequest)
-	if err != nil {
+	w.Header().Set("Content-Type", "application/json")
+	switch r.Method {
+	case "POST":
+		createTODORequest := &model.CreateTODORequest{}
+		if err := json.NewDecoder(r.Body).Decode(createTODORequest); err != nil {
 			log.Println(err)
 			return
 		}
 
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(todoResponse)
+		if createTODORequest.Subject == "" {
+			w.WriteHeader(http.StatusBadRequest)
+			return
+		}
+
+		ctx := r.Context()
+		createTODOResponse, err := h.Create(ctx, createTODORequest)
+		if err != nil {
+				log.Println(err)
+				return
+			}
+
+		json.NewEncoder(w).Encode(createTODOResponse)
+
+	case "PUT":
+		updateTODORequest := model.UpdateTODORequest{}
+		if err := json.NewDecoder(r.Body).Decode(&updateTODORequest); err != nil{
+			log.Println(err)
+			return
+		}
+
+		if updateTODORequest.ID == 0 || updateTODORequest.Subject == ""{
+			w.WriteHeader(http.StatusBadRequest)
+			return
+		}
+
+		updateTODOResponse, err := h.Update(r.Context(), &updateTODORequest)
+		if err != nil{
+			w.WriteHeader(http.StatusNotFound)
+			return
+		}
+
+		json.NewEncoder(w).Encode(updateTODOResponse)
+
+	default:
+		w.WriteHeader(http.StatusBadRequest)
+	}
 }
 
 // Create handles the endpoint that creates the TODO.
@@ -64,8 +85,8 @@ func (h *TODOHandler) Read(ctx context.Context, req *model.ReadTODORequest) (*mo
 
 // Update handles the endpoint that updates the TODO.
 func (h *TODOHandler) Update(ctx context.Context, req *model.UpdateTODORequest) (*model.UpdateTODOResponse, error) {
-	_, _ = h.svc.UpdateTODO(ctx, 0, "", "")
-	return &model.UpdateTODOResponse{}, nil
+	todo, err := h.svc.UpdateTODO(ctx, req.ID, req.Subject, req.Description)
+	return &model.UpdateTODOResponse{TODO: *todo}, err
 }
 
 // Delete handles the endpoint that deletes the TODOs.
