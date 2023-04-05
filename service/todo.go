@@ -57,7 +57,10 @@ func (s *TODOService) ReadTODO(ctx context.Context, prevID, size int64) ([]*mode
 	var err error
 
 	// Query the database for TODOs
-	if prevID > 0 {
+	if prevID==0 && size==0 {
+		rows, err = s.db.QueryContext(ctx, read, 3)
+	} else if
+	prevID > 0 {
 		rows, err = s.db.QueryContext(ctx, readWithID, prevID, size)
 	} else {
 		rows, err = s.db.QueryContext(ctx, read, size)
