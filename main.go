@@ -54,7 +54,7 @@ func realMain() error {
 	mux := router.NewRouter(todoDB)
 	svc := service.NewTODOService(todoDB)
 	mux.HandleFunc("/todos", handler.NewTODOHandler(svc).ServeHTTP)
-  mux.HandleFunc("/healthz", handler.NewHealthzHandler().ServeHTTP)
+	mux.HandleFunc("/healthz", handler.NewHealthzHandler().ServeHTTP)
 
 	// * HTTPSサーバーを立ち上げる
 	http.ListenAndServe(port, mux)
