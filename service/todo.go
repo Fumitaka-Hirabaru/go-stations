@@ -57,10 +57,9 @@ func (s *TODOService) ReadTODO(ctx context.Context, prevID, size int64) ([]*mode
 	var err error
 
 	// Query the database for TODOs
-	if prevID==0 && size==0 {
+	if prevID == 0 && size == 0 {
 		rows, err = s.db.QueryContext(ctx, read, 3)
-	} else if
-	prevID > 0 {
+	} else if prevID > 0 {
 		rows, err = s.db.QueryContext(ctx, readWithID, prevID, size)
 	} else {
 		rows, err = s.db.QueryContext(ctx, read, size)
@@ -149,7 +148,10 @@ func (s *TODOService) DeleteTODO(ctx context.Context, ids []int64) error {
 		return err
 	}
 	if rowsAffected == 0 {
-		return &model.ErrNotFound{}
+		return &model.ErrNotFound{
+			When: time.Now(),
+			What: "There is no deleted TODO",
+		}
 	}
 
 	return nil
