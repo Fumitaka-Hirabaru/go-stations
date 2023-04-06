@@ -3,7 +3,6 @@ package handler
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
 	"strconv"
@@ -24,11 +23,10 @@ func NewTODOHandler(svc *service.TODOService) *TODOHandler {
 	}
 }
 
-func (h *TODOHandler) ServeHTTP(w http.ResponseWriter, r *http.Request){
+func (h *TODOHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	switch r.Method {
 	case "POST":
-		fmt.Println("####")
 		createTODORequest := &model.CreateTODORequest{}
 		if err := json.NewDecoder(r.Body).Decode(createTODORequest); err != nil {
 			log.Println(err)
@@ -43,26 +41,26 @@ func (h *TODOHandler) ServeHTTP(w http.ResponseWriter, r *http.Request){
 		ctx := r.Context()
 		createTODOResponse, err := h.Create(ctx, createTODORequest)
 		if err != nil {
-				log.Println(err)
-				return
-			}
+			log.Println(err)
+			return
+		}
 
 		json.NewEncoder(w).Encode(createTODOResponse)
 
 	case "PUT":
 		updateTODORequest := model.UpdateTODORequest{}
-		if err := json.NewDecoder(r.Body).Decode(&updateTODORequest); err != nil{
+		if err := json.NewDecoder(r.Body).Decode(&updateTODORequest); err != nil {
 			log.Println(err)
 			return
 		}
 
-		if updateTODORequest.ID == 0 || updateTODORequest.Subject == ""{
+		if updateTODORequest.ID == 0 || updateTODORequest.Subject == "" {
 			w.WriteHeader(http.StatusBadRequest)
 			return
 		}
 
 		updateTODOResponse, err := h.Update(r.Context(), &updateTODORequest)
-		if err != nil{
+		if err != nil {
 			w.WriteHeader(http.StatusNotFound)
 			return
 		}
@@ -87,6 +85,29 @@ func (h *TODOHandler) ServeHTTP(w http.ResponseWriter, r *http.Request){
 		}
 
 		json.NewEncoder(w).Encode(readTODOResponse)
+
+	case "DELETE":
+		deleteTODORequest := &model.DeleteTODORequest{}
+		if err := json.NewDecoder(r.Body).Decode(deleteTODORequest); err != nil {
+			log.Println(err)
+			w.WriteHeader(http.StatusBadRequest)
+			return
+		}
+
+		if len(deleteTODORequest.IDs) == 0 {
+			w.WriteHeader(http.StatusBadRequest)
+			return
+		}
+
+		ctx := r.Context()
+		deleteTODOResponse, err := h.Delete(ctx, deleteTODORequest)
+		if err != nil {
+			log.Println(err)
+			w.WriteHeader(http.StatusNotFound)
+			return
+		}
+
+		json.NewEncoder(w).Encode(deleteTODOResponse)
 
 	default:
 		w.WriteHeader(http.StatusBadRequest)
@@ -117,6 +138,9 @@ func (h *TODOHandler) Update(ctx context.Context, req *model.UpdateTODORequest) 
 
 // Delete handles the endpoint that deletes the TODOs.
 func (h *TODOHandler) Delete(ctx context.Context, req *model.DeleteTODORequest) (*model.DeleteTODOResponse, error) {
-	_ = h.svc.DeleteTODO(ctx, nil)
+	err := h.svc.DeleteTODO(ctx, req.IDs)
+	if err != nil {
+		return nil, err
+	}
 	return &model.DeleteTODOResponse{}, nil
 }
