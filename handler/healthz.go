@@ -9,7 +9,7 @@ import (
 )
 
 // A HealthzHandler implements health check endpoint.
-type HealthzHandler struct{
+type HealthzHandler struct {
 	Endpoint string
 }
 
