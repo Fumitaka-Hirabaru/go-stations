@@ -8,7 +8,7 @@ import (
 	"github.com/mileusna/useragent"
 )
 
-var userAgentKey = struct{}{}
+type userAgentKey struct{}
 
 // UserAgentContext returns a middleware that adds user agent to context
 func UserAgentContext(h http.Handler) http.Handler {
@@ -16,7 +16,7 @@ func UserAgentContext(h http.Handler) http.Handler {
 		log.Println("user-agent: ", r.UserAgent())
 		ua := useragent.Parse(r.UserAgent())
 		ctx := r.Context()
-		ctx = context.WithValue(ctx, userAgentKey, ua.OS)
+		ctx = context.WithValue(ctx, userAgentKey{}, ua.OS)
 		r = r.WithContext(ctx)
 		h.ServeHTTP(w, r)
 	}
